@@ -60,4 +60,18 @@ public class JWTUtils {
         return secretKey;
       }
 
+    //根据token获取用户Id
+    public static String getUserId(String token) {
+        try{
+            String claims=JWTUtils.parseJWT(token).toString();
+            int index1=claims.lastIndexOf("=");
+            int index2=claims.indexOf("}");
+            return claims.substring(index1+1,index2);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

@@ -1,11 +1,16 @@
 package com.liang.human.config;
+import com.liang.human.dao.UserDao;
+import com.liang.human.domain.User;
 import com.liang.human.exception.CustomException;
 import com.liang.human.exception.CustomExceptionType;
+import com.liang.human.model.UserVO;
+import com.liang.human.service.UserService;
 import com.liang.human.utils.JWTUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
@@ -13,6 +18,8 @@ import java.util.Optional;
 
 @Component
 public class JWTInterceptor implements HandlerInterceptor {
+    @Resource
+    UserDao userDao;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -25,6 +32,10 @@ public class JWTInterceptor implements HandlerInterceptor {
 
         //后台管理页面产生的token
         String token = request.getHeader("authorization");
+
+        if(token==null||token.equals("")){
+            throw new CustomException(CustomExceptionType.NOT_LOGIN,"token不存在");
+        }
 
         //将其加入request
         request.setAttribute("token",token);
@@ -40,6 +51,10 @@ public class JWTInterceptor implements HandlerInterceptor {
                         throw new CustomException(CustomExceptionType.NOT_LOGIN,"token不存在");
                     }
                 });
+        //将user信息加入全局
+        String userId=JWTUtils.getUserId(token);
+        User user=userDao.getById(Integer.valueOf(userId));
+        UserContext.setUser(user);
 
         return true;
     }
