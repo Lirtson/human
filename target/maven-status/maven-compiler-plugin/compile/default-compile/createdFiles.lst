@@ -19,6 +19,7 @@ com\liang\human\service\UserService.class
 com\liang\human\domain\User$UserBuilder.class
 com\liang\human\model\AjaxResponse.class
 com\liang\human\model\UserVO$UserVOBuilder.class
+com\liang\human\config\TwoInterceptor.class
 com\liang\human\exception\CustomExceptionType.class
 com\liang\human\exception\NotFoundException.class
 com\liang\human\domain\User.class

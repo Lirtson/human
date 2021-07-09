@@ -23,11 +23,15 @@ public class JWTInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        //解决跨域
 
+        response.setContentType("application/json; charset=utf-8");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+        response.setHeader("Access-Control-Max-Age", "3600");
         // 允许跨域
         response.setHeader("Access-Control-Allow-Origin", "*");
         // 允许自定义请求头token(允许head跨域)
-        response.setHeader("Access-Control-Allow-Headers", "token, Accept, Origin, X-Requested-With, Content-Type, Last-Modified");
+        response.setHeader("Access-Control-Allow-Headers", "access-control-allow-origin,token, Accept, Origin, X-Requested-With, Content-Type, Last-Modified,Authorization");
 
 
         //后台管理页面产生的token

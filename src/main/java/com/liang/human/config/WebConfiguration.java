@@ -20,16 +20,35 @@ public class WebConfiguration implements WebMvcConfigurer {
     JWTInterceptor jwtInterceptor(){
         return new JWTInterceptor();
     }
+    @Bean
+    TwoInterceptor twoInterceptor(){
+        return new TwoInterceptor();
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        //所有页面都要给爷跨域
+        registry.addInterceptor(twoInterceptor()).addPathPatterns("/*/**");
+        System.out.println("跨域拦截器启动");
+
         System.out.println("JWT拦截器启动");
-        //除了注册都需要登录
+        //排除一些不需要登录的
         registry.addInterceptor(jwtInterceptor())
                 .excludePathPatterns("/api/register")
                 .excludePathPatterns("/api/login")
                 .excludePathPatterns("/api/comments")
+                .excludePathPatterns("/api/testpost")
+                .excludePathPatterns("/api/testget")
                 .addPathPatterns();
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry corsRegistry) {
+        corsRegistry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowCredentials(true)
+                .allowedMethods("GET", "POST", "DELETE", "PUT","PATCH","OPTIONS")
+                .maxAge(3600);
     }
 
     @Override
@@ -64,10 +83,6 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry corsRegistry) {
-
-    }
 
     @Override
     public void addViewControllers(ViewControllerRegistry viewControllerRegistry) {
